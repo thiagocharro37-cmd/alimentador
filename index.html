@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Comedouro — painel de alimentação</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#EDE6D8;
+    --surface:#F8F4EB;
+    --surface-2:#FFFFFF;
+    --ink:#2B2420;
+    --ink-soft:#6B6155;
+    --ink-faint:#A79C8B;
+    --amber:#C97A3D;
+    --amber-dark:#A85F29;
+    --amber-tint:#F1DEC9;
+    --sage:#6E7F5F;
+    --sage-tint:#E1E7D8;
+    --red:#B8422C;
+    --red-tint:#F3DAD3;
+    --slate:#57666C;
+    --line:#DED2BC;
+    --radius:14px;
+    --shadow: 0 1px 2px rgba(43,36,32,0.06), 0 8px 24px rgba(43,36,32,0.06);
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-font-smoothing:antialiased;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    padding-bottom:80px;
+  }
+  h1,h2,h3{
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  a{color:inherit;}
+
+  .wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+
+  /* header */
+  header.top{
+    padding:28px 20px 16px;
+  }
+  .top-row{
+    max-width:760px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:12px;
+  }
+  .brand{display:flex;align-items:center;gap:10px;}
+  .brand-mark{
+    width:34px;height:34px;border-radius:9px;
+    background:var(--ink);
+    display:flex;align-items:center;justify-content:center;
+  }
+  .brand-mark svg{width:18px;height:18px;}
+  .brand-name{font-size:17px;}
+  .status-pill{
+    display:flex;align-items:center;gap:7px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;
+    color:var(--ink-soft);
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    padding:6px 12px 6px 10px;
+    border-radius:999px;
+  }
+  .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-faint);flex-shrink:0;}
+  .dot.on{background:var(--sage);box-shadow:0 0 0 3px var(--sage-tint);}
+  .dot.off{background:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+
+  /* hero / dial card */
+  .hero{
+    background:var(--surface);
+    border:1px solid var(--line);
+    border-radius:22px;
+    padding:32px 24px 24px;
+    margin:8px 0 24px;
+    box-shadow:var(--shadow);
+  }
+  .dial-row{
+    display:flex;align-items:center;gap:28px;
+    flex-wrap:wrap;
+  }
+  .dial-wrap{position:relative;width:180px;height:180px;flex-shrink:0;margin:0 auto;}
+  .dial-info{flex:1;min-width:200px;}
+  .dial-info .eyebrow{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;text-transform:uppercase;letter-spacing:0.08em;
+    color:var(--ink-faint);margin-bottom:6px;
+  }
+  .weight-line{
+    display:flex;align-items:baseline;gap:6px;margin-bottom:4px;
+  }
+  .weight-line .num{
+    font-family:'Space Grotesk',sans-serif;font-weight:700;
+    font-size:40px;line-height:1;color:var(--ink);
+  }
+  .weight-line .unit{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--ink-soft);}
+  .pot-state{
+    font-size:13px;color:var(--ink-soft);margin-top:8px;
+    display:flex;align-items:center;gap:6px;
+  }
+  .pot-state.bad{color:var(--red);font-weight:500;}
+  .pot-state.good{color:var(--sage);}
+  .next-feed{
+    margin-top:16px;padding-top:16px;border-top:1px solid var(--line);
+    font-size:13px;color:var(--ink-soft);
+  }
+  .next-feed .mono{color:var(--ink);font-size:14px;}
+
+  svg.dial{width:100%;height:100%;}
+  .dial-track{fill:none;stroke:var(--line);stroke-width:8;}
+  .dial-fill{fill:none;stroke:var(--amber);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .6s ease;}
+  .dial-center{font-family:'IBM Plex Mono',monospace;}
+
+  .feed-btn{
+    margin-top:22px;
+    width:100%;
+    background:var(--amber);
+    color:#fff;
+    border:none;
+    border-radius:12px;
+    padding:16px 20px;
+    font-family:'Space Grotesk',sans-serif;
+    font-weight:600;
+    font-size:16px;
+    cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    transition:background .15s ease, transform .1s ease;
+  }
+  .feed-btn:hover{background:var(--amber-dark);}
+  .feed-btn:active{transform:scale(0.99);}
+  .feed-btn:disabled{background:var(--ink-faint);cursor:not-allowed;}
+  .feed-btn svg{width:18px;height:18px;}
+  .feed-note{
+    text-align:center;font-size:12px;color:var(--ink-faint);
+    margin-top:10px;font-family:'IBM Plex Mono',monospace;
+  }
+
+  /* section shells */
+  section.block{margin-bottom:24px;}
+  .block-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:12px;
+  }
+  .block-head h2{font-size:17px;}
+  .block-head .hint{font-size:12px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;}
+
+  /* schedules */
+  .card{
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    overflow:hidden;
+  }
+  .sched-row{
+    display:flex;align-items:center;gap:14px;
+    padding:14px 16px;
+    border-bottom:1px solid var(--line);
+  }
+  .sched-row:last-child{border-bottom:none;}
+  .sched-time{
+    font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:500;
+    min-width:64px;
+  }
+  .sched-grams{
+    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft);
+    background:var(--amber-tint);color:var(--amber-dark);
+    padding:3px 9px;border-radius:999px;flex-shrink:0;
+  }
+  .sched-spacer{flex:1;}
+  .toggle{
+    position:relative;width:36px;height:21px;flex-shrink:0;
+    background:var(--line);border-radius:999px;cursor:pointer;
+    transition:background .15s ease;border:none;padding:0;
+  }
+  .toggle.active{background:var(--sage);}
+  .toggle .knob{
+    position:absolute;top:2px;left:2px;width:17px;height:17px;
+    background:#fff;border-radius:50%;transition:transform .15s ease;
+    box-shadow:0 1px 2px rgba(0,0,0,0.2);
+  }
+  .toggle.active .knob{transform:translateX(15px);}
+  .icon-btn{
+    background:none;border:none;cursor:pointer;color:var(--ink-faint);
+    padding:4px;display:flex;align-items:center;justify-content:center;
+    border-radius:6px;flex-shrink:0;
+  }
+  .icon-btn:hover{color:var(--red);background:var(--red-tint);}
+  .icon-btn svg{width:16px;height:16px;}
+
+  .add-row{
+    display:flex;align-items:center;gap:10px;
+    padding:14px 16px;
+    background:var(--surface);
+  }
+  .add-row input{
+    font-family:'IBM Plex Mono',monospace;
+    border:1px solid var(--line);
+    border-radius:8px;
+    padding:9px 10px;
+    font-size:14px;
+    background:#fff;
+    color:var(--ink);
+  }
+  .add-row input[type="time"]{width:110px;}
+  .add-row input[type="number"]{width:80px;}
+  .add-row .add-btn{
+    margin-left:auto;
+    background:var(--ink);color:#fff;border:none;
+    border-radius:8px;padding:9px 16px;
+    font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
+    cursor:pointer;
+  }
+  .add-row .add-btn:hover{background:var(--amber-dark);}
+
+  .empty-state{
+    padding:28px 16px;text-align:center;color:var(--ink-faint);font-size:13px;
+  }
+
+  /* history */
+  .log-row{
+    display:flex;align-items:center;gap:12px;
+    padding:11px 16px;
+    border-bottom:1px solid var(--line);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+  }
+  .log-row:last-child{border-bottom:none;}
+  .log-date{color:var(--ink-soft);min-width:110px;}
+  .log-grams{min-width:52px;color:var(--ink);}
+  .log-type{color:var(--ink-faint);min-width:64px;}
+  .log-status{margin-left:auto;padding:2px 8px;border-radius:999px;font-size:11px;}
+  .log-status.ok{background:var(--sage-tint);color:var(--sage);}
+  .log-status.fail{background:var(--red-tint);color:var(--red);}
+
+  footer{
+    text-align:center;padding:24px 20px 0;
+    font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important;}
+  }
+
+  @media (max-width:480px){
+    .weight-line .num{font-size:32px;}
+    .dial-wrap{width:150px;height:150px;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-row">
+    <div class="brand">
+      <div class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#F8F4EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 14v-2a3 3 0 0 1 6 0v2"/></svg>
+      </div>
+      <div class="brand-name">Comedouro</div>
+    </div>
+    <div class="status-pill">
+      <span class="dot" id="deviceDot"></span>
+      <span id="deviceStatusText">verificando…</span>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- HERO / DIAL -->
+  <section class="hero">
+    <div class="dial-row">
+      <div class="dial-wrap">
+        <svg class="dial" viewBox="0 0 180 180">
+          <circle class="dial-track" cx="90" cy="90" r="78"/>
+          <circle class="dial-fill" id="dialFill" cx="90" cy="90" r="78"
+            stroke-dasharray="490" stroke-dashoffset="490"
+            transform="rotate(-90 90 90)"/>
+          <text x="90" y="86" text-anchor="middle" class="dial-center" font-size="11" fill="var(--ink-faint)">próxima refeição</text>
+          <text x="90" y="106" text-anchor="middle" class="dial-center" font-size="18" font-weight="600" fill="var(--ink)" id="dialCountdown">--:--</text>
+        </svg>
+      </div>
+      <div class="dial-info">
+        <div class="eyebrow">Peso no pote agora</div>
+        <div class="weight-line">
+          <span class="num" id="currentWeight">--</span>
+          <span class="unit">g</span>
+        </div>
+        <div class="pot-state good" id="potState">
+          <span>Aguardando leitura do sensor</span>
+        </div>
+        <div class="next-feed">
+          Próximo horário agendado — <span class="mono" id="nextScheduleLabel">--:--</span>
+        </div>
+      </div>
+    </div>
+
+    <button class="feed-btn" id="feedNowBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
+      Alimentar agora
+    </button>
+    <div class="feed-note" id="feedNote">libera a porção padrão imediatamente</div>
+  </section>
+
+  <!-- SCHEDULES -->
+  <section class="block">
+    <div class="block-head">
+      <h2>Horários</h2>
+      <span class="hint" id="schedCount">0 cadastrados</span>
+    </div>
+    <div class="card">
+      <div id="scheduleList"></div>
+      <div class="add-row">
+        <input type="time" id="newTime" value="07:00">
+        <input type="number" id="newGrams" value="80" min="5" max="500" step="5">
+        <span style="font-size:12px;color:var(--ink-faint)">g</span>
+        <button class="add-btn" id="addScheduleBtn">Adicionar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- HISTORY -->
+  <section class="block">
+    <div class="block-head">
+      <h2>Histórico</h2>
+      <span class="hint">últimas 20 alimentações</span>
+    </div>
+    <div class="card">
+      <div id="logList">
+        <div class="empty-state">nenhum registro ainda</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer>comedouro · conectado via firebase</footer>
+
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
+  import {
+    getDatabase, ref, set, update, remove, push, onValue
+  } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  // ------------------------------------------------------------------
+  // 1. CONFIGURAÇÃO DO FIREBASE — troque pelos dados do seu projeto
+  //    (Console do Firebase > Configurações do projeto > Seus apps > Web)
+  // ------------------------------------------------------------------
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_PROJETO.firebaseapp.com",
+    databaseURL: "https://SEU_PROJETO-default-rtdb.firebaseio.com",
+    projectId: "SEU_PROJETO"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const auth = getAuth(app);
+  const db = getDatabase(app);
+
+  signInAnonymously(auth).catch((err) => {
+    console.error("Falha na autenticação anônima:", err);
+  });
+
+  // ------------------------------------------------------------------
+  // 2. ESTADO / STATUS DO DISPOSITIVO
+  // ------------------------------------------------------------------
+  const deviceDot = document.getElementById("deviceDot");
+  const deviceStatusText = document.getElementById("deviceStatusText");
+  const currentWeightEl = document.getElementById("currentWeight");
+  const potStateEl = document.getElementById("potState");
+  const nextScheduleLabel = document.getElementById("nextScheduleLabel");
+  const dialCountdown = document.getElementById("dialCountdown");
+  const dialFill = document.getElementById("dialFill");
+  const DIAL_CIRCUMFERENCE = 490;
+
+  let schedulesCache = {};
+
+  onValue(ref(db, "status"), (snap) => {
+    const s = snap.val() || {};
+    currentWeightEl.textContent = (s.current_weight ?? "--");
+
+    const online = s.last_seen && (Date.now() / 1000 - s.last_seen < 60);
+    deviceDot.className = "dot " + (online ? "on" : "off");
+    deviceStatusText.textContent = online ? "dispositivo online" : "dispositivo offline";
+
+    if (s.pot_recognized === false) {
+      potStateEl.className = "pot-state bad";
+      potStateEl.innerHTML = "<span>Pote não reconhecido — ração não será liberada</span>";
+    } else {
+      potStateEl.className = "pot-state good";
+      potStateEl.innerHTML = "<span>Pote reconhecido</span>";
+    }
+  });
+
+  function updateNextSchedule() {
+    const active = Object.values(schedulesCache).filter(s => s.active);
+    if (active.length === 0) {
+      nextScheduleLabel.textContent = "nenhum horário ativo";
+      dialCountdown.textContent = "--:--";
+      dialFill.style.strokeDashoffset = DIAL_CIRCUMFERENCE;
+      return;
+    }
+    const now = new Date();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+    let best = null;
+    let bestDiff = Infinity;
+    active.forEach(s => {
+      const [h, m] = s.time.split(":").map(Number);
+      let diff = (h * 60 + m) - nowMinutes;
+      if (diff < 0) diff += 24 * 60;
+      if (diff < bestDiff) { bestDiff = diff; best = s; }
+    });
+
+    nextScheduleLabel.textContent = best.time + " · " + best.grams + "g";
+    const hoursLeft = Math.floor(bestDiff / 60);
+    const minsLeft = bestDiff % 60;
+    dialCountdown.textContent = String(hoursLeft).padStart(2, "0") + ":" + String(minsLeft).padStart(2, "0");
+
+    const progress = 1 - (bestDiff / (24 * 60));
+    dialFill.style.strokeDashoffset = DIAL_CIRCUMFERENCE * (1 - progress);
+  }
+  setInterval(updateNextSchedule, 30000);
+
+  // ------------------------------------------------------------------
+  // 3. HORÁRIOS (schedules)
+  // ------------------------------------------------------------------
+  const scheduleList = document.getElementById("scheduleList");
+  const schedCount = document.getElementById("schedCount");
+
+  onValue(ref(db, "schedules"), (snap) => {
+    schedulesCache = snap.val() || {};
+    renderSchedules();
+    updateNextSchedule();
+  });
+
+  function renderSchedules() {
+    const entries = Object.entries(schedulesCache).sort((a, b) => a[1].time.localeCompare(b[1].time));
+    schedCount.textContent = entries.length + (entries.length === 1 ? " cadastrado" : " cadastrados");
+
+    if (entries.length === 0) {
+      scheduleList.innerHTML = '<div class="empty-state">nenhum horário cadastrado — adicione um abaixo</div>';
+      return;
+    }
+
+    scheduleList.innerHTML = entries.map(([id, s]) => `
+      <div class="sched-row">
+        <span class="sched-time">${s.time}</span>
+        <span class="sched-grams">${s.grams}g</span>
+        <span class="sched-spacer"></span>
+        <button class="toggle ${s.active ? "active" : ""}" data-id="${id}" data-action="toggle" aria-label="Ativar ou desativar horário">
+          <span class="knob"></span>
+        </button>
+        <button class="icon-btn" data-id="${id}" data-action="delete" aria-label="Remover horário">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2m3 0-1 14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2L4 6h16z"/></svg>
+        </button>
+      </div>
+    `).join("");
+  }
+
+  scheduleList.addEventListener("click", (e) => {
+    const btn = e.target.closest("button[data-action]");
+    if (!btn) return;
+    const id = btn.dataset.id;
+    if (btn.dataset.action === "toggle") {
+      const current = schedulesCache[id]?.active;
+      update(ref(db, "schedules/" + id), { active: !current });
+    } else if (btn.dataset.action === "delete") {
+      remove(ref(db, "schedules/" + id));
+    }
+  });
+
+  document.getElementById("addScheduleBtn").addEventListener("click", () => {
+    const time = document.getElementById("newTime").value;
+    const grams = Number(document.getElementById("newGrams").value);
+    if (!time || !grams) return;
+    const newRef = push(ref(db, "schedules"));
+    set(newRef, { time, grams, active: true });
+  });
+
+  // ------------------------------------------------------------------
+  // 4. ALIMENTAÇÃO PONTUAL (feed now)
+  // ------------------------------------------------------------------
+  const feedBtn = document.getElementById("feedNowBtn");
+  const feedNote = document.getElementById("feedNote");
+
+  feedBtn.addEventListener("click", () => {
+    feedBtn.disabled = true;
+    feedNote.textContent = "enviando comando…";
+    set(ref(db, "commands"), {
+      feed_now: true,
+      feed_now_timestamp: Math.floor(Date.now() / 1000)
+    }).then(() => {
+      feedNote.textContent = "comando enviado — aguardando o comedouro liberar a ração";
+    });
+  });
+
+  onValue(ref(db, "commands/feed_now"), (snap) => {
+    const pending = snap.val();
+    if (pending === false) {
+      feedBtn.disabled = false;
+      feedNote.textContent = "libera a porção padrão imediatamente";
+    }
+  });
+
+  // ------------------------------------------------------------------
+  // 5. HISTÓRICO (logs)
+  // ------------------------------------------------------------------
+  const logList = document.getElementById("logList");
+
+  onValue(ref(db, "logs"), (snap) => {
+    const logs = snap.val() || {};
+    const entries = Object.values(logs).sort((a, b) => b.timestamp - a.timestamp).slice(0, 20);
+
+    if (entries.length === 0) {
+      logList.innerHTML = '<div class="empty-state">nenhum registro ainda</div>';
+      return;
+    }
+
+    logList.innerHTML = entries.map(l => {
+      const d = new Date(l.timestamp * 1000);
+      const dateStr = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) + " " +
+                      d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+      const typeLabel = l.type === "manual" ? "manual" : "agendado";
+      const statusClass = l.success ? "ok" : "fail";
+      const statusLabel = l.success ? "ok" : (l.reason === "pote_nao_reconhecido" ? "pote não reconhecido" : "falhou");
+      return `
+        <div class="log-row">
+          <span class="log-date">${dateStr}</span>
+          <span class="log-grams">${l.grams ?? 0}g</span>
+          <span class="log-type">${typeLabel}</span>
+          <span class="log-status ${statusClass}">${statusLabel}</span>
+        </div>
+      `;
+    }).join("");
+  });
+</script>
+
+</body>
+</html>
