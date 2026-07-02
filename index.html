@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alimentador Automatico - Hugo</title>
+<title>Comedouro — painel de alimentação</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -408,7 +408,10 @@
     deviceDot.className = "dot " + (online ? "on" : "off");
     deviceStatusText.textContent = online ? "dispositivo online" : "dispositivo offline";
 
-    if (s.pot_recognized === false) {
+    if (s.pot_present === false) {
+      potStateEl.className = "pot-state bad";
+      potStateEl.innerHTML = "<span>⚠️ Pote ausente da base — verifique se ele caiu ou foi deslocado</span>";
+    } else if (s.pot_recognized === false) {
       potStateEl.className = "pot-state bad";
       potStateEl.innerHTML = "<span>Pote não reconhecido — ração não será liberada</span>";
     } else {
