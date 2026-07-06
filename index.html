@@ -138,6 +138,10 @@
     font-size:40px;line-height:1;color:var(--ink);
   }
   .weight-line .unit{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--ink-soft);}
+  .weight-line .sub{
+    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-faint);
+    margin-left:2px;
+  }
   .pot-state{
     font-size:13px;color:var(--ink-soft);margin-top:8px;
     display:flex;align-items:center;gap:6px;
@@ -272,9 +276,10 @@
   .log-date{color:var(--ink-soft);min-width:110px;}
   .log-grams{min-width:52px;color:var(--ink);}
   .log-type{color:var(--ink-faint);min-width:64px;}
-  .log-status{margin-left:auto;padding:2px 8px;border-radius:999px;font-size:11px;}
+  .log-status{margin-left:auto;padding:2px 8px;border-radius:999px;font-size:11px;white-space:nowrap;}
   .log-status.ok{background:var(--sage-tint);color:var(--sage);}
   .log-status.fail{background:var(--red-tint);color:var(--red);}
+  .log-status.skip{background:var(--amber-tint);color:var(--amber-dark);}
 
   footer{
     text-align:center;padding:24px 20px 0;
@@ -329,10 +334,11 @@
         </svg>
       </div>
       <div class="dial-info">
-        <div class="eyebrow">Peso no pote agora</div>
+        <div class="eyebrow">Última quantidade liberada</div>
         <div class="weight-line">
           <span class="num" id="currentWeight">--</span>
           <span class="unit">g</span>
+          <span class="sub" id="lastFeedTime"></span>
         </div>
         <div class="pot-state good" id="potState">
           <span>Aguardando leitura do sensor</span>
@@ -412,10 +418,14 @@
 
   // ------------------------------------------------------------------
   // 2. ESTADO / STATUS DO DISPOSITIVO
+  //    (agora o "status" só traz: tigela detectada ou não (via LDR) +
+  //    quanto foi liberado na última alimentação — sem peso contínuo,
+  //    já que a célula de carga só é confiável logo após a dispensa)
   // ------------------------------------------------------------------
   const deviceDot = document.getElementById("deviceDot");
   const deviceStatusText = document.getElementById("deviceStatusText");
   const currentWeightEl = document.getElementById("currentWeight");
+  const lastFeedTimeEl = document.getElementById("lastFeedTime");
   const potStateEl = document.getElementById("potState");
   const nextScheduleLabel = document.getElementById("nextScheduleLabel");
   const dialCountdown = document.getElementById("dialCountdown");
@@ -426,21 +436,26 @@
 
   onValue(ref(db, "status"), (snap) => {
     const s = snap.val() || {};
-    currentWeightEl.textContent = (s.current_weight ?? "--");
+
+    currentWeightEl.textContent = (s.last_feed_grams ?? "--");
+
+    if (s.last_feed_time) {
+      const d = new Date(s.last_feed_time * 1000);
+      lastFeedTimeEl.textContent = "às " + d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    } else {
+      lastFeedTimeEl.textContent = "";
+    }
 
     const online = s.last_seen && (Date.now() / 1000 - s.last_seen < 60);
     deviceDot.className = "dot " + (online ? "on" : "off");
     deviceStatusText.textContent = online ? "dispositivo online" : "dispositivo offline";
 
-    if (s.pot_present === false) {
+    if (s.pot_recognized === false) {
       potStateEl.className = "pot-state bad";
-      potStateEl.innerHTML = "<span>⚠️ Pote ausente da base — verifique se ele caiu ou foi deslocado</span>";
-    } else if (s.pot_recognized === false) {
-      potStateEl.className = "pot-state bad";
-      potStateEl.innerHTML = "<span>Pote não reconhecido — ração não será liberada</span>";
+      potStateEl.innerHTML = "<span>Tigela não detectada — ração não será liberada</span>";
     } else {
       potStateEl.className = "pot-state good";
-      potStateEl.innerHTML = "<span>Pote reconhecido</span>";
+      potStateEl.innerHTML = "<span>Tigela detectada</span>";
     }
   });
 
@@ -557,8 +572,18 @@
 
   // ------------------------------------------------------------------
   // 5. HISTÓRICO (logs)
+  //    Mapa de motivos de falha/abortos, incluindo os novos do LDR
+  //    e do anti-travamento.
   // ------------------------------------------------------------------
   const logList = document.getElementById("logList");
+
+  const reasonLabels = {
+    tigela_nao_detectada: "tigela não detectada",
+    pote_removido_durante_liberacao: "tigela removida durante liberação",
+    travamento_persistente: "travamento no parafuso",
+    ciclo_pulado_recente: "pulado — alimentou há pouco",
+    sem_liberacao_detectada: "sem liberação detectada"
+  };
 
   onValue(ref(db, "logs"), (snap) => {
     const logs = snap.val() || {};
@@ -574,8 +599,20 @@
       const dateStr = d.toLocaleDateString("pt-BR", { day: "2-digit", month: "2-digit" }) + " " +
                       d.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
       const typeLabel = l.type === "manual" ? "manual" : "agendado";
-      const statusClass = l.success ? "ok" : "fail";
-      const statusLabel = l.success ? "ok" : (l.reason === "pote_nao_reconhecido" ? "pote não reconhecido" : "falhou");
+
+      let statusClass = "fail";
+      let statusLabel = "falhou";
+      if (l.success) {
+        statusClass = "ok";
+        statusLabel = "ok";
+      } else if (l.reason === "ciclo_pulado_recente") {
+        statusClass = "skip";
+        statusLabel = reasonLabels[l.reason];
+      } else if (l.reason && reasonLabels[l.reason]) {
+        statusClass = "fail";
+        statusLabel = reasonLabels[l.reason];
+      }
+
       return `
         <div class="log-row">
           <span class="log-date">${dateStr}</span>
