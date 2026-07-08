@@ -3,296 +3,449 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Alimentador Automatico - Hugo</title>
+<title>Alimentador · Hugo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,450;9..144,560;9..144,650;9..144,720&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <!-- ============ PWA / ícone de tela inicial ============ -->
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<meta name="theme-color" content="#2B2420">
+<meta name="theme-color" content="#1B140F">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Alimentador">
+<meta name="apple-mobile-web-app-title" content="Hugo">
 <!-- ======================================================= -->
 
 <style>
   :root{
-    --bg:#EDE6D8;
-    --surface:#F8F4EB;
-    --surface-2:#FFFFFF;
-    --ink:#2B2420;
-    --ink-soft:#6B6155;
-    --ink-faint:#A79C8B;
-    --amber:#C97A3D;
-    --amber-dark:#A85F29;
-    --amber-tint:#F1DEC9;
-    --sage:#6E7F5F;
-    --sage-tint:#E1E7D8;
-    --red:#B8422C;
-    --red-tint:#F3DAD3;
-    --slate:#57666C;
-    --line:#DED2BC;
-    --radius:14px;
-    --shadow: 0 1px 2px rgba(43,36,32,0.06), 0 8px 24px rgba(43,36,32,0.06);
+    /* ---- paleta: cozinha ao entardecer, luz quente sobre a tigela ---- */
+    --bg:#1B140F;
+    --bg-glow: radial-gradient(1200px 600px at 50% -10%, rgba(231,163,61,0.10), transparent 60%);
+    --surface:#241B14;
+    --surface-2:#2C2118;
+    --surface-3:#372A1E;
+    --ink:#F5ECDC;
+    --ink-soft:#C7B79E;
+    --ink-faint:#8C7A62;
+    --honey:#E7A33D;
+    --honey-dark:#C9822A;
+    --honey-tint:rgba(231,163,61,0.16);
+    --honey-tint-strong:rgba(231,163,61,0.28);
+    --sage:#93A671;
+    --sage-tint:rgba(147,166,113,0.16);
+    --rust:#C9695A;
+    --rust-tint:rgba(201,105,90,0.16);
+    --line:rgba(245,236,220,0.09);
+    --line-strong:rgba(245,236,220,0.17);
+    --radius:20px;
+    --radius-sm:12px;
+    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 16px 40px rgba(0,0,0,0.35);
   }
   *{box-sizing:border-box;}
   html{-webkit-font-smoothing:antialiased;}
   body{
     margin:0;
-    background:var(--bg);
+    background:
+      var(--bg-glow),
+      var(--bg);
+    background-attachment:fixed;
     color:var(--ink);
     font-family:'Inter',sans-serif;
     line-height:1.5;
-    padding-bottom:80px;
+    padding-bottom:64px;
   }
   h1,h2,h3{
-    font-family:'Space Grotesk',sans-serif;
+    font-family:'Fraunces',serif;
     font-weight:600;
     margin:0;
     letter-spacing:-0.01em;
   }
   .mono{font-family:'IBM Plex Mono',monospace;}
   a{color:inherit;}
+  button{font:inherit;}
+  ::selection{background:var(--honey-tint-strong);}
 
-  .wrap{max-width:760px;margin:0 auto;padding:0 20px;}
+  :focus-visible{outline:2px solid var(--honey);outline-offset:2px;border-radius:6px;}
 
-  /* header */
-  header.top{
-    padding:28px 20px 16px;
+  .wrap{max-width:720px;margin:0 auto;padding:0 20px;}
+
+  /* ---------- entrance ---------- */
+  @keyframes rise{
+    from{opacity:0;transform:translateY(10px);}
+    to{opacity:1;transform:translateY(0);}
   }
+  .rise{animation:rise .55s cubic-bezier(.2,.7,.3,1) both;}
+  .rise-1{animation-delay:.02s;}
+  .rise-2{animation-delay:.09s;}
+  .rise-3{animation-delay:.16s;}
+  .rise-4{animation-delay:.23s;}
+
+  /* ---------- header ---------- */
+  header.top{padding:24px 20px 8px;}
   .top-row{
-    max-width:760px;margin:0 auto;
+    max-width:720px;margin:0 auto;
     display:flex;align-items:center;justify-content:space-between;
     gap:12px;
   }
-  .brand{display:flex;align-items:center;gap:10px;}
+  .brand{display:flex;align-items:center;gap:11px;}
   .brand-mark{
-    width:34px;height:34px;border-radius:9px;
-    background:var(--ink);
+    width:38px;height:38px;border-radius:11px;
+    background:linear-gradient(160deg,var(--honey),var(--honey-dark));
     display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 14px rgba(231,163,61,0.28);
+    transition:transform .3s cubic-bezier(.2,.8,.3,1.3);
   }
-  .brand-mark svg{width:18px;height:18px;}
-  .brand-name{font-size:17px;}
+  .brand:hover .brand-mark{transform:rotate(-8deg) scale(1.05);}
+  .brand-mark svg{width:20px;height:20px;}
+  .brand-name{font-size:17px;font-family:'Fraunces',serif;font-weight:600;}
+  .brand-name .dim{color:var(--ink-faint);font-weight:450;}
 
   .top-actions{display:flex;align-items:center;gap:8px;}
 
   .status-pill{
     display:flex;align-items:center;gap:7px;
     font-family:'IBM Plex Mono',monospace;
-    font-size:12px;
+    font-size:11.5px;
     color:var(--ink-soft);
-    background:var(--surface-2);
+    background:var(--surface);
     border:1px solid var(--line);
     padding:6px 12px 6px 10px;
     border-radius:999px;
   }
   .dot{width:7px;height:7px;border-radius:50%;background:var(--ink-faint);flex-shrink:0;}
   .dot.on{background:var(--sage);box-shadow:0 0 0 3px var(--sage-tint);}
-  .dot.off{background:var(--red);box-shadow:0 0 0 3px var(--red-tint);}
+  .dot.off{background:var(--rust);box-shadow:0 0 0 3px var(--rust-tint);}
 
   .refresh-btn{
     display:flex;align-items:center;justify-content:center;
     width:34px;height:34px;flex-shrink:0;
-    background:var(--surface-2);
+    background:var(--surface);
     border:1px solid var(--line);
     border-radius:999px;
     cursor:pointer;
     color:var(--ink-soft);
-    transition:background .15s ease, color .15s ease, transform .4s ease;
+    transition:background .15s ease, color .15s ease, transform .4s ease, border-color .15s ease;
   }
-  .refresh-btn:hover{color:var(--ink);background:var(--amber-tint);}
+  .refresh-btn:hover{color:var(--honey);background:var(--honey-tint);border-color:transparent;}
   .refresh-btn:active{transform:scale(0.92);}
   .refresh-btn svg{width:16px;height:16px;}
   .refresh-btn.spinning svg{animation:spin .7s linear;}
   @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 
-  /* hero / dial card */
+  /* ---------- hero ---------- */
   .hero{
+    position:relative;
+    overflow:hidden;
     background:var(--surface);
     border:1px solid var(--line);
-    border-radius:22px;
-    padding:32px 24px 24px;
-    margin:8px 0 24px;
+    border-radius:26px;
+    padding:30px 24px 26px;
+    margin:14px 0 24px;
     box-shadow:var(--shadow);
   }
-  .dial-row{
-    display:flex;align-items:center;gap:28px;
-    flex-wrap:wrap;
+  .hero-deco{
+    position:absolute;top:-30px;right:-26px;
+    width:150px;height:150px;
+    opacity:.5;
+    pointer-events:none;
   }
-  .dial-wrap{position:relative;width:180px;height:180px;flex-shrink:0;margin:0 auto;}
-  .dial-info{flex:1;min-width:200px;}
-  .dial-info .eyebrow{
+  .hero-eyebrow{
     font-family:'IBM Plex Mono',monospace;
-    font-size:11px;text-transform:uppercase;letter-spacing:0.08em;
+    font-size:11px;text-transform:uppercase;letter-spacing:0.1em;
+    color:var(--honey);margin-bottom:8px;
+    display:flex;align-items:center;gap:7px;
+  }
+  .hero-eyebrow .paw{width:11px;height:11px;flex-shrink:0;opacity:.9;}
+  .hero-title{
+    font-size:22px;
+    font-weight:600;
+    color:var(--ink);
+    max-width:19ch;
+    margin-bottom:22px;
+    position:relative;
+    z-index:1;
+  }
+
+  .stat-row{
+    display:flex;align-items:flex-end;justify-content:space-between;
+    gap:16px;flex-wrap:wrap;
+    margin-bottom:22px;
+    position:relative;z-index:1;
+  }
+  .stat-label{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:11px;text-transform:uppercase;letter-spacing:0.07em;
     color:var(--ink-faint);margin-bottom:6px;
   }
-  .weight-line{
-    display:flex;align-items:baseline;gap:6px;margin-bottom:4px;
-  }
+  .weight-line{display:flex;align-items:baseline;gap:6px;}
   .weight-line .num{
-    font-family:'Space Grotesk',sans-serif;font-weight:700;
-    font-size:40px;line-height:1;color:var(--ink);
+    font-family:'Fraunces',serif;font-weight:650;font-variation-settings:'opsz' 90;
+    font-size:52px;line-height:1;color:var(--ink);
+    font-variant-numeric:tabular-nums;
   }
-  .weight-line .unit{font-family:'IBM Plex Mono',monospace;font-size:15px;color:var(--ink-soft);}
-  .weight-line .sub{
-    font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-faint);
-    margin-left:2px;
-  }
+  .weight-line .unit{font-family:'IBM Plex Mono',monospace;font-size:16px;color:var(--ink-soft);}
+  .weight-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--ink-faint);margin-top:5px;}
+
   .pot-state{
-    font-size:13px;color:var(--ink-soft);margin-top:8px;
-    display:flex;align-items:center;gap:6px;
+    display:flex;align-items:center;gap:8px;
+    font-size:12.5px;color:var(--sage);
+    background:var(--sage-tint);
+    padding:8px 12px;
+    border-radius:999px;
+    max-width:min(240px,100%);
   }
-  .pot-state.bad{color:var(--red);font-weight:500;}
-  .pot-state.good{color:var(--sage);}
-  .next-feed{
-    margin-top:16px;padding-top:16px;border-top:1px solid var(--line);
-    font-size:13px;color:var(--ink-soft);
+  .pot-state svg{width:15px;height:15px;flex-shrink:0;}
+  .pot-state.bad{color:var(--rust);background:var(--rust-tint);}
+
+  /* ---------- signature: linha do dia ---------- */
+  .timeline-block{
+    position:relative;z-index:1;
+    background:var(--surface-2);
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:20px 18px 14px;
+    margin-bottom:18px;
   }
-  .next-feed .mono{color:var(--ink);font-size:14px;}
-
-  svg.dial{width:100%;height:100%;}
-  .dial-track{fill:none;stroke:var(--line);stroke-width:8;}
-  .dial-fill{fill:none;stroke:var(--amber);stroke-width:8;stroke-linecap:round;transition:stroke-dashoffset .6s ease;}
-  .dial-center{font-family:'IBM Plex Mono',monospace;}
-
-  .feed-btn{
-    margin-top:22px;
-    width:100%;
-    background:var(--amber);
-    color:#fff;
-    border:none;
-    border-radius:12px;
-    padding:16px 20px;
-    font-family:'Space Grotesk',sans-serif;
+  .timeline-head{
+    display:flex;align-items:baseline;justify-content:space-between;
+    margin-bottom:20px;
+    font-size:12.5px;color:var(--ink-soft);
+  }
+  .timeline-head .mono{color:var(--ink);font-size:13px;}
+  .timeline-track-wrap{position:relative;padding:0 2px;}
+  .timeline-track{
+    position:relative;
+    height:6px;
+    border-radius:999px;
+    background:linear-gradient(to right,
+      #1a2140 0%, #2c2c52 6%,
+      #6a5040 16%, #d99a4e 28%,
+      #efc978 42%, #f7dfa0 50%, #efc978 58%,
+      #d99a4e 72%, #6a5040 84%,
+      #2c2c52 94%, #1a2140 100%);
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25);
+  }
+  .timeline-now{
+    position:absolute;top:50%;
+    width:3px;height:20px;
+    background:var(--ink);
+    border-radius:3px;
+    transform:translate(-50%,-50%);
+    box-shadow:0 0 0 3px rgba(27,20,15,0.9), 0 0 10px rgba(245,236,220,0.5);
+    transition:left 1s linear;
+  }
+  .timeline-marker{
+    position:absolute;top:50%;
+    width:13px;height:13px;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    background:var(--bg);
+    border:2px solid var(--ink-faint);
+    transition:left .3s ease, border-color .2s ease, background .2s ease, box-shadow .2s ease;
+  }
+  .timeline-marker.inactive{opacity:.4;border-style:dashed;}
+  .timeline-marker.past{background:var(--ink);border-color:var(--ink);}
+  .timeline-marker.next{
+    background:var(--honey);border-color:var(--honey);
+    box-shadow:0 0 0 6px var(--honey-tint);
+    animation:pulseMark 2.2s ease-in-out infinite;
+  }
+  @keyframes pulseMark{
+    0%,100%{box-shadow:0 0 0 5px var(--honey-tint);}
+    50%{box-shadow:0 0 0 9px transparent;}
+  }
+  .timeline-marker .chip{
+    position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;white-space:nowrap;
+    color:var(--bg);background:var(--honey);
+    padding:3px 8px;border-radius:999px;
     font-weight:600;
-    font-size:16px;
-    cursor:pointer;
-    display:flex;align-items:center;justify-content:center;gap:10px;
-    transition:background .15s ease, transform .1s ease;
+    opacity:0;pointer-events:none;
+    transition:opacity .2s ease;
   }
-  .feed-btn:hover{background:var(--amber-dark);}
-  .feed-btn:active{transform:scale(0.99);}
-  .feed-btn:disabled{background:var(--ink-faint);cursor:not-allowed;}
-  .feed-btn svg{width:18px;height:18px;}
+  .timeline-marker.next .chip{opacity:1;}
+  .timeline-labels{
+    display:flex;justify-content:space-between;
+    margin-top:26px;
+    font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--ink-faint);
+  }
+
+  .next-feed{
+    font-size:13px;color:var(--ink-soft);
+    position:relative;z-index:1;
+  }
+  .next-feed .mono{color:var(--honey);font-size:13.5px;font-weight:600;}
+
+  /* ---------- feed button ---------- */
+  .feed-btn{
+    margin-top:20px;
+    width:100%;
+    background:linear-gradient(160deg,var(--honey),var(--honey-dark));
+    color:#221507;
+    border:none;
+    border-radius:14px;
+    padding:17px 20px;
+    font-family:'Fraunces',serif;
+    font-weight:600;
+    font-size:16.5px;
+    cursor:pointer;
+    position:relative;z-index:1;
+    display:flex;align-items:center;justify-content:center;gap:10px;
+    box-shadow:0 8px 22px rgba(231,163,61,0.28);
+    transition:filter .15s ease, transform .1s ease, box-shadow .15s ease;
+  }
+  .feed-btn:hover{filter:brightness(1.06);box-shadow:0 10px 26px rgba(231,163,61,0.38);}
+  .feed-btn:active{transform:scale(0.985);}
+  .feed-btn:disabled{background:var(--surface-3);color:var(--ink-faint);cursor:not-allowed;box-shadow:none;}
+  .feed-btn svg{width:19px;height:19px;flex-shrink:0;}
+  .feed-btn .kibble{
+    position:absolute;width:5px;height:5px;border-radius:1px;
+    background:#221507;top:8px;opacity:0;
+  }
+  .feed-btn.dropping .kibble{animation:drop .6s ease-in forwards;}
+  .feed-btn.dropping .kibble:nth-child(1){left:38%;animation-delay:0s;}
+  .feed-btn.dropping .kibble:nth-child(2){left:50%;animation-delay:.08s;}
+  .feed-btn.dropping .kibble:nth-child(3){left:62%;animation-delay:.16s;}
+  @keyframes drop{
+    0%{opacity:1;transform:translateY(0) rotate(0deg);}
+    100%{opacity:0;transform:translateY(38px) rotate(140deg);}
+  }
   .feed-note{
     text-align:center;font-size:12px;color:var(--ink-faint);
     margin-top:10px;font-family:'IBM Plex Mono',monospace;
+    position:relative;z-index:1;
   }
 
-  /* section shells */
-  section.block{margin-bottom:24px;}
+  /* ---------- section shells ---------- */
+  section.block{margin-bottom:22px;}
   .block-head{
     display:flex;align-items:baseline;justify-content:space-between;
-    margin-bottom:12px;
+    margin-bottom:12px;padding:0 2px;
   }
-  .block-head h2{font-size:17px;}
-  .block-head .hint{font-size:12px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;}
+  .block-head h2{font-size:16.5px;}
+  .block-head .hint{font-size:11.5px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;}
 
-  /* schedules */
   .card{
-    background:var(--surface-2);
+    background:var(--surface);
     border:1px solid var(--line);
     border-radius:var(--radius);
     overflow:hidden;
+    box-shadow:var(--shadow);
   }
+
+  /* ---------- schedules ---------- */
   .sched-row{
     display:flex;align-items:center;gap:14px;
     padding:14px 16px;
     border-bottom:1px solid var(--line);
+    transition:background .15s ease;
   }
+  .sched-row:hover{background:var(--surface-2);}
   .sched-row:last-child{border-bottom:none;}
   .sched-time{
-    font-family:'IBM Plex Mono',monospace;font-size:20px;font-weight:500;
-    min-width:64px;
+    font-family:'IBM Plex Mono',monospace;font-size:19px;font-weight:500;
+    min-width:60px;color:var(--ink);
   }
   .sched-grams{
-    font-family:'IBM Plex Mono',monospace;font-size:13px;color:var(--ink-soft);
-    background:var(--amber-tint);color:var(--amber-dark);
-    padding:3px 9px;border-radius:999px;flex-shrink:0;
+    font-family:'IBM Plex Mono',monospace;font-size:12.5px;
+    background:var(--honey-tint);color:var(--honey);
+    padding:3px 10px;border-radius:999px;flex-shrink:0;
   }
   .sched-spacer{flex:1;}
   .toggle{
-    position:relative;width:36px;height:21px;flex-shrink:0;
-    background:var(--line);border-radius:999px;cursor:pointer;
+    position:relative;width:38px;height:22px;flex-shrink:0;
+    background:var(--surface-3);border-radius:999px;cursor:pointer;
     transition:background .15s ease;border:none;padding:0;
   }
   .toggle.active{background:var(--sage);}
   .toggle .knob{
-    position:absolute;top:2px;left:2px;width:17px;height:17px;
-    background:#fff;border-radius:50%;transition:transform .15s ease;
-    box-shadow:0 1px 2px rgba(0,0,0,0.2);
+    position:absolute;top:2px;left:2px;width:18px;height:18px;
+    background:#F5ECDC;border-radius:50%;transition:transform .15s ease;
+    box-shadow:0 1px 3px rgba(0,0,0,0.3);
   }
-  .toggle.active .knob{transform:translateX(15px);}
+  .toggle.active .knob{transform:translateX(16px);}
   .icon-btn{
     background:none;border:none;cursor:pointer;color:var(--ink-faint);
-    padding:4px;display:flex;align-items:center;justify-content:center;
-    border-radius:6px;flex-shrink:0;
+    padding:5px;display:flex;align-items:center;justify-content:center;
+    border-radius:7px;flex-shrink:0;transition:color .15s ease, background .15s ease;
   }
-  .icon-btn:hover{color:var(--red);background:var(--red-tint);}
+  .icon-btn:hover{color:var(--rust);background:var(--rust-tint);}
   .icon-btn svg{width:16px;height:16px;}
 
   .add-row{
-    display:flex;align-items:center;gap:10px;
+    display:flex;align-items:center;gap:10px;flex-wrap:wrap;
     padding:14px 16px;
-    background:var(--surface);
+    background:var(--surface-2);
   }
   .add-row input{
     font-family:'IBM Plex Mono',monospace;
-    border:1px solid var(--line);
-    border-radius:8px;
+    border:1px solid var(--line-strong);
+    border-radius:9px;
     padding:9px 10px;
     font-size:14px;
-    background:#fff;
+    background:var(--bg);
     color:var(--ink);
+    transition:border-color .15s ease;
   }
-  .add-row input[type="time"]{width:110px;}
-  .add-row input[type="number"]{width:80px;}
+  .add-row input:focus{border-color:var(--honey);}
+  .add-row input[type="time"]{width:112px;}
+  .add-row input[type="number"]{width:78px;}
   .add-row .add-btn{
     margin-left:auto;
-    background:var(--ink);color:#fff;border:none;
-    border-radius:8px;padding:9px 16px;
+    background:var(--honey);color:#221507;border:none;
+    border-radius:9px;padding:10px 16px;
     font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
-    cursor:pointer;
+    cursor:pointer;transition:filter .15s ease;
+    display:flex;align-items:center;gap:6px;
   }
-  .add-row .add-btn:hover{background:var(--amber-dark);}
+  .add-row .add-btn:hover{filter:brightness(1.08);}
+  .add-row .add-btn svg{width:14px;height:14px;}
 
   .empty-state{
-    padding:28px 16px;text-align:center;color:var(--ink-faint);font-size:13px;
+    padding:32px 16px;text-align:center;color:var(--ink-faint);font-size:13px;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
   }
+  .empty-state svg{width:26px;height:26px;opacity:.5;}
 
-  /* history */
+  /* ---------- history ---------- */
   .log-row{
     display:flex;align-items:center;gap:12px;
-    padding:11px 16px;
+    padding:12px 16px;
     border-bottom:1px solid var(--line);
     font-family:'IBM Plex Mono',monospace;
     font-size:12.5px;
+    transition:background .15s ease;
   }
+  .log-row:hover{background:var(--surface-2);}
   .log-row:last-child{border-bottom:none;}
-  .log-date{color:var(--ink-soft);min-width:110px;}
-  .log-grams{min-width:52px;color:var(--ink);}
-  .log-type{color:var(--ink-faint);min-width:64px;}
-  .log-status{margin-left:auto;padding:2px 8px;border-radius:999px;font-size:11px;white-space:nowrap;}
+  .log-date{color:var(--ink-soft);min-width:100px;}
+  .log-grams{min-width:48px;color:var(--ink);}
+  .log-type{color:var(--ink-faint);min-width:60px;}
+  .log-status{margin-left:auto;padding:3px 9px;border-radius:999px;font-size:11px;white-space:nowrap;}
   .log-status.ok{background:var(--sage-tint);color:var(--sage);}
-  .log-status.fail{background:var(--red-tint);color:var(--red);}
-  .log-status.skip{background:var(--amber-tint);color:var(--amber-dark);}
+  .log-status.fail{background:var(--rust-tint);color:var(--rust);}
+  .log-status.skip{background:var(--honey-tint);color:var(--honey);}
 
   footer{
-    text-align:center;padding:24px 20px 0;
+    text-align:center;padding:26px 20px 0;
     font-size:11px;color:var(--ink-faint);font-family:'IBM Plex Mono',monospace;
+    display:flex;flex-direction:column;align-items:center;gap:8px;
   }
+  footer .foot-paw{width:16px;height:16px;opacity:.4;}
 
   @media (prefers-reduced-motion: reduce){
-    *{transition:none !important;}
+    *{animation:none !important;transition:none !important;}
   }
 
   @media (max-width:480px){
-    .weight-line .num{font-size:32px;}
-    .dial-wrap{width:150px;height:150px;}
+    .weight-line .num{font-size:42px;}
+    .hero-title{font-size:19px;}
+    .hero-deco{width:110px;height:110px;top:-20px;right:-18px;}
+    .add-row{gap:8px;}
+    .add-row .add-btn{margin-left:0;width:100%;justify-content:center;}
   }
 </style>
 </head>
@@ -302,9 +455,9 @@
   <div class="top-row">
     <div class="brand">
       <div class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#F8F4EB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 14v-2a3 3 0 0 1 6 0v2"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#221507" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 14v-2a3 3 0 0 1 6 0v2"/></svg>
       </div>
-      <div class="brand-name">Alimentador</div>
+      <div class="brand-name">Alimentador <span class="dim">· Hugo</span></div>
     </div>
     <div class="top-actions">
       <button class="refresh-btn" id="refreshBtn" aria-label="Atualizar dados">
@@ -320,46 +473,67 @@
 
 <div class="wrap">
 
-  <!-- HERO / DIAL -->
-  <section class="hero">
-    <div class="dial-row">
-      <div class="dial-wrap">
-        <svg class="dial" viewBox="0 0 180 180">
-          <circle class="dial-track" cx="90" cy="90" r="78"/>
-          <circle class="dial-fill" id="dialFill" cx="90" cy="90" r="78"
-            stroke-dasharray="490" stroke-dashoffset="490"
-            transform="rotate(-90 90 90)"/>
-          <text x="90" y="86" text-anchor="middle" class="dial-center" font-size="11" fill="var(--ink-faint)">próxima refeição</text>
-          <text x="90" y="106" text-anchor="middle" class="dial-center" font-size="18" font-weight="600" fill="var(--ink)" id="dialCountdown">--:--</text>
-        </svg>
-      </div>
-      <div class="dial-info">
-        <div class="eyebrow">Última quantidade liberada</div>
+  <!-- HERO -->
+  <section class="hero rise rise-1">
+    <svg class="hero-deco" viewBox="0 0 100 100" fill="none">
+      <circle cx="72" cy="26" r="3.2" fill="var(--honey)" opacity=".5"/>
+      <circle cx="84" cy="40" r="2.2" fill="var(--honey)" opacity=".35"/>
+      <circle cx="60" cy="14" r="1.8" fill="var(--honey)" opacity=".3"/>
+      <path d="M50 55c0 8-6 8-6 15s6 9 12 9 12-2 12-9-6-7-6-15" stroke="var(--honey)" stroke-width="1.4" opacity=".18"/>
+    </svg>
+
+    <div class="hero-eyebrow">
+      <svg class="paw" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="16" rx="6" ry="5"/><ellipse cx="5" cy="8" rx="2.2" ry="2.8"/><ellipse cx="19" cy="8" rx="2.2" ry="2.8"/><ellipse cx="9" cy="4.5" rx="2" ry="2.6"/><ellipse cx="15" cy="4.5" rx="2" ry="2.6"/></svg>
+      <span id="greeting">Bom dia</span>
+    </div>
+    <h1 class="hero-title">Como está a rotina do Hugo</h1>
+
+    <div class="stat-row">
+      <div>
+        <div class="stat-label">Última porção liberada</div>
         <div class="weight-line">
           <span class="num" id="currentWeight">--</span>
           <span class="unit">g</span>
-          <span class="sub" id="lastFeedTime"></span>
         </div>
-        <div class="pot-state good" id="potState">
-          <span>Aguardando leitura do sensor</span>
-        </div>
-        <div class="next-feed">
-          Próximo horário agendado — <span class="mono" id="nextScheduleLabel">--:--</span>
-        </div>
+        <div class="weight-sub" id="lastFeedTime"></div>
+      </div>
+      <div class="pot-state good" id="potState">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/></svg>
+        <span>Aguardando leitura do sensor</span>
       </div>
     </div>
 
+    <div class="timeline-block">
+      <div class="timeline-head">
+        <span>Rotina de hoje</span>
+        <span class="mono" id="nowClock">--:--</span>
+      </div>
+      <div class="timeline-track-wrap">
+        <div class="timeline-track" id="timelineTrack">
+          <div class="timeline-now" id="timelineNow" style="left:0%"></div>
+        </div>
+      </div>
+      <div class="timeline-labels">
+        <span>00h</span><span>06h</span><span>12h</span><span>18h</span><span>24h</span>
+      </div>
+    </div>
+
+    <div class="next-feed">
+      Próxima refeição — <span class="mono" id="nextScheduleLabel">--:--</span> · daqui a <span class="mono" id="dialCountdown">--:--</span>
+    </div>
+
     <button class="feed-btn" id="feedNowBtn">
+      <span class="kibble"></span><span class="kibble"></span><span class="kibble"></span>
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v4M12 18v4M4.9 4.9l2.8 2.8M16.3 16.3l2.8 2.8M2 12h4M18 12h4M4.9 19.1l2.8-2.8M16.3 7.7l2.8-2.8"/></svg>
-      Alimentar agora
+      Alimentar o Hugo agora
     </button>
-    <div class="feed-note" id="feedNote">libera a porção padrão imediatamente</div>
+    <div class="feed-note" id="feedNote">libera a porção padrão na hora</div>
   </section>
 
   <!-- SCHEDULES -->
-  <section class="block">
+  <section class="block rise rise-2">
     <div class="block-head">
-      <h2>Horários</h2>
+      <h2>Rotina de horários</h2>
       <span class="hint" id="schedCount">0 cadastrados</span>
     </div>
     <div class="card">
@@ -368,16 +542,19 @@
         <input type="time" id="newTime" value="07:00">
         <input type="number" id="newGrams" value="80" min="5" max="500" step="5">
         <span style="font-size:12px;color:var(--ink-faint)">g</span>
-        <button class="add-btn" id="addScheduleBtn">Adicionar</button>
+        <button class="add-btn" id="addScheduleBtn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+          Adicionar
+        </button>
       </div>
     </div>
   </section>
 
   <!-- HISTORY -->
-  <section class="block">
+  <section class="block rise rise-3">
     <div class="block-head">
-      <h2>Histórico</h2>
-      <span class="hint">últimas 20 alimentações</span>
+      <h2>Histórico de refeições</h2>
+      <span class="hint">últimas 20</span>
     </div>
     <div class="card">
       <div id="logList">
@@ -388,7 +565,10 @@
 
 </div>
 
-<footer>Alimentador · conectado via firebase</footer>
+<footer class="rise rise-4">
+  <svg class="foot-paw" viewBox="0 0 24 24" fill="currentColor"><ellipse cx="12" cy="16" rx="6" ry="5"/><ellipse cx="5" cy="8" rx="2.2" ry="2.8"/><ellipse cx="19" cy="8" rx="2.2" ry="2.8"/><ellipse cx="9" cy="4.5" rx="2" ry="2.6"/><ellipse cx="15" cy="4.5" rx="2" ry="2.6"/></svg>
+  <span>feito com carinho para o Hugo · conectado via firebase</span>
+</footer>
 
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
@@ -398,8 +578,7 @@
   } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
   // ------------------------------------------------------------------
-  // 1. CONFIGURAÇÃO DO FIREBASE — troque pelos dados do seu projeto
-  //    (Console do Firebase > Configurações do projeto > Seus apps > Web)
+  // 1. CONFIGURAÇÃO DO FIREBASE
   // ------------------------------------------------------------------
   const firebaseConfig = {
     apiKey: "AIzaSyBsDYieDGv5JPFszpwWIn3uXm9yiMtr3b0",
@@ -417,8 +596,19 @@
   });
 
   // ------------------------------------------------------------------
-  // 2. ESTADO / STATUS DO DISPOSITIVO
-  //    (agora o "status" só traz: tigela detectada ou não (via LDR) +
+  // 2. SAUDAÇÃO + RELÓGIO
+  // ------------------------------------------------------------------
+  const greetingEl = document.getElementById("greeting");
+  const nowClockEl = document.getElementById("nowClock");
+
+  function updateGreeting() {
+    const h = new Date().getHours();
+    greetingEl.textContent = h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
+  }
+
+  // ------------------------------------------------------------------
+  // 3. ESTADO / STATUS DO DISPOSITIVO
+  //    (o "status" traz: tigela detectada ou não (via LDR) +
   //    quanto foi liberado na última alimentação — sem peso contínuo,
   //    já que a célula de carga só é confiável logo após a dispensa)
   // ------------------------------------------------------------------
@@ -429,8 +619,8 @@
   const potStateEl = document.getElementById("potState");
   const nextScheduleLabel = document.getElementById("nextScheduleLabel");
   const dialCountdown = document.getElementById("dialCountdown");
-  const dialFill = document.getElementById("dialFill");
-  const DIAL_CIRCUMFERENCE = 490;
+  const timelineNow = document.getElementById("timelineNow");
+  const timelineTrack = document.getElementById("timelineTrack");
 
   let schedulesCache = {};
 
@@ -452,19 +642,33 @@
 
     if (s.pot_recognized === false) {
       potStateEl.className = "pot-state bad";
-      potStateEl.innerHTML = "<span>Tigela não detectada — ração não será liberada</span>";
+      potStateEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 9l6 6M15 9l-6 6"/></svg><span>Tigela fora do lugar — a ração não libera até ela voltar</span>';
     } else {
       potStateEl.className = "pot-state good";
-      potStateEl.innerHTML = "<span>Tigela detectada</span>";
+      potStateEl.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 14l2.5 2.5L16 11"/></svg><span>Tigela pronta pra próxima refeição</span>';
     }
   });
+
+  // ------------------------------------------------------------------
+  // 4. LINHA DO DIA (posição atual + próxima refeição)
+  // ------------------------------------------------------------------
+  function minutesToPercent(mins) {
+    return (mins / 1440) * 100;
+  }
+
+  function updateNow() {
+    const now = new Date();
+    nowClockEl.textContent = now.toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" });
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+    timelineNow.style.left = minutesToPercent(nowMinutes) + "%";
+  }
 
   function updateNextSchedule() {
     const active = Object.values(schedulesCache).filter(s => s.active);
     if (active.length === 0) {
       nextScheduleLabel.textContent = "nenhum horário ativo";
       dialCountdown.textContent = "--:--";
-      dialFill.style.strokeDashoffset = DIAL_CIRCUMFERENCE;
+      renderTimelineMarkers(null);
       return;
     }
     const now = new Date();
@@ -484,13 +688,12 @@
     const minsLeft = bestDiff % 60;
     dialCountdown.textContent = String(hoursLeft).padStart(2, "0") + ":" + String(minsLeft).padStart(2, "0");
 
-    const progress = 1 - (bestDiff / (24 * 60));
-    dialFill.style.strokeDashoffset = DIAL_CIRCUMFERENCE * (1 - progress);
+    renderTimelineMarkers(best.time);
   }
-  setInterval(updateNextSchedule, 30000);
+  setInterval(() => { updateNow(); updateNextSchedule(); }, 30000);
 
   // ------------------------------------------------------------------
-  // 3. HORÁRIOS (schedules)
+  // 5. HORÁRIOS (schedules)
   // ------------------------------------------------------------------
   const scheduleList = document.getElementById("scheduleList");
   const schedCount = document.getElementById("schedCount");
@@ -506,7 +709,10 @@
     schedCount.textContent = entries.length + (entries.length === 1 ? " cadastrado" : " cadastrados");
 
     if (entries.length === 0) {
-      scheduleList.innerHTML = '<div class="empty-state">nenhum horário cadastrado — adicione um abaixo</div>';
+      scheduleList.innerHTML = `<div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        nenhum horário ainda — a rotina do Hugo começa aqui
+      </div>`;
       return;
     }
 
@@ -523,6 +729,31 @@
         </button>
       </div>
     `).join("");
+  }
+
+  function renderTimelineMarkers(nextTime) {
+    // remove marcadores antigos, mantém a linha de "agora"
+    timelineTrack.querySelectorAll(".timeline-marker").forEach(el => el.remove());
+
+    const now = new Date();
+    const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+    Object.values(schedulesCache).forEach(s => {
+      const [h, m] = s.time.split(":").map(Number);
+      const mins = h * 60 + m;
+      const marker = document.createElement("div");
+      let cls = "timeline-marker";
+      if (!s.active) cls += " inactive";
+      else if (s.time === nextTime) cls += " next";
+      else if (mins < nowMinutes) cls += " past";
+      marker.className = cls;
+      marker.style.left = minutesToPercent(mins) + "%";
+      marker.title = s.time + " · " + s.grams + "g";
+      if (s.time === nextTime) {
+        marker.innerHTML = `<span class="chip">${s.time} · ${s.grams}g</span>`;
+      }
+      timelineTrack.appendChild(marker);
+    });
   }
 
   scheduleList.addEventListener("click", (e) => {
@@ -546,19 +777,21 @@
   });
 
   // ------------------------------------------------------------------
-  // 4. ALIMENTAÇÃO PONTUAL (feed now)
+  // 6. ALIMENTAÇÃO PONTUAL (feed now)
   // ------------------------------------------------------------------
   const feedBtn = document.getElementById("feedNowBtn");
   const feedNote = document.getElementById("feedNote");
 
   feedBtn.addEventListener("click", () => {
     feedBtn.disabled = true;
-    feedNote.textContent = "enviando comando…";
+    feedBtn.classList.add("dropping");
+    feedNote.textContent = "enviando pro alimentador…";
+    setTimeout(() => feedBtn.classList.remove("dropping"), 650);
     set(ref(db, "commands"), {
       feed_now: true,
       feed_now_timestamp: Math.floor(Date.now() / 1000)
     }).then(() => {
-      feedNote.textContent = "comando enviado — aguardando o alimentador liberar a ração";
+      feedNote.textContent = "comando enviado — aguardando o Hugo correr até a tigela";
     });
   });
 
@@ -566,13 +799,13 @@
     const pending = snap.val();
     if (pending === false) {
       feedBtn.disabled = false;
-      feedNote.textContent = "libera a porção padrão imediatamente";
+      feedNote.textContent = "libera a porção padrão na hora";
     }
   });
 
   // ------------------------------------------------------------------
-  // 5. HISTÓRICO (logs)
-  //    Mapa de motivos de falha/abortos, incluindo os novos do LDR
+  // 7. HISTÓRICO (logs)
+  //    Mapa de motivos de falha/abortos, incluindo os do LDR
   //    e do anti-travamento.
   // ------------------------------------------------------------------
   const logList = document.getElementById("logList");
@@ -590,7 +823,10 @@
     const entries = Object.values(logs).sort((a, b) => b.timestamp - a.timestamp).slice(0, 20);
 
     if (entries.length === 0) {
-      logList.innerHTML = '<div class="empty-state">nenhum registro ainda</div>';
+      logList.innerHTML = `<div class="empty-state">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 14v-2a3 3 0 0 1 6 0v2"/></svg>
+        ainda sem registros
+      </div>`;
       return;
     }
 
@@ -625,7 +861,7 @@
   });
 
   // ------------------------------------------------------------------
-  // 6. BOTÃO DE ATUALIZAR (refresh manual)
+  // 8. BOTÃO DE ATUALIZAR (refresh manual)
   // ------------------------------------------------------------------
   const refreshBtn = document.getElementById("refreshBtn");
   refreshBtn.addEventListener("click", () => {
@@ -635,6 +871,12 @@
       location.reload();
     }, 250);
   });
+
+  // ------------------------------------------------------------------
+  // 9. INICIALIZAÇÃO
+  // ------------------------------------------------------------------
+  updateGreeting();
+  updateNow();
 </script>
 
 </body>
