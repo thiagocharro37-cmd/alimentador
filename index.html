@@ -6,14 +6,14 @@
 <title>Alimentador · Hugo</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,450;9..144,560;9..144,650;9..144,720&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
 <!-- ============ PWA / ícone de tela inicial ============ -->
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-<meta name="theme-color" content="#1B140F">
+<meta name="theme-color" content="#FBF6EC">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Hugo">
@@ -21,28 +21,28 @@
 
 <style>
   :root{
-    /* ---- paleta: cozinha ao entardecer, luz quente sobre a tigela ---- */
-    --bg:#1B140F;
-    --bg-glow: radial-gradient(1200px 600px at 50% -10%, rgba(231,163,61,0.10), transparent 60%);
-    --surface:#241B14;
-    --surface-2:#2C2118;
-    --surface-3:#372A1E;
-    --ink:#F5ECDC;
-    --ink-soft:#C7B79E;
-    --ink-faint:#8C7A62;
-    --honey:#E7A33D;
-    --honey-dark:#C9822A;
-    --honey-tint:rgba(231,163,61,0.16);
-    --honey-tint-strong:rgba(231,163,61,0.28);
-    --sage:#93A671;
-    --sage-tint:rgba(147,166,113,0.16);
-    --rust:#C9695A;
-    --rust-tint:rgba(201,105,90,0.16);
-    --line:rgba(245,236,220,0.09);
-    --line-strong:rgba(245,236,220,0.17);
+    /* ---- paleta: manhã na cozinha, creme quente e dourado ---- */
+    --bg:#FBF6EC;
+    --bg-glow: radial-gradient(1100px 560px at 50% -8%, rgba(203,138,46,0.09), transparent 62%);
+    --surface:#FFFFFF;
+    --surface-2:#F4EDDC;
+    --surface-3:#EADFC7;
+    --ink:#372A1D;
+    --ink-soft:#7C6B54;
+    --ink-faint:#AA9B83;
+    --honey:#CB8A2E;
+    --honey-dark:#A96F1F;
+    --honey-tint:rgba(203,138,46,0.13);
+    --honey-tint-strong:rgba(203,138,46,0.24);
+    --sage:#5F7A4C;
+    --sage-tint:rgba(95,122,76,0.13);
+    --rust:#B5503C;
+    --rust-tint:rgba(181,80,60,0.13);
+    --line:rgba(55,42,29,0.10);
+    --line-strong:rgba(55,42,29,0.18);
     --radius:20px;
     --radius-sm:12px;
-    --shadow: 0 1px 2px rgba(0,0,0,0.35), 0 16px 40px rgba(0,0,0,0.35);
+    --shadow: 0 1px 2px rgba(55,42,29,0.05), 0 16px 36px rgba(55,42,29,0.08);
   }
   *{box-sizing:border-box;}
   html{-webkit-font-smoothing:antialiased;}
@@ -58,7 +58,7 @@
     padding-bottom:64px;
   }
   h1,h2,h3{
-    font-family:'Fraunces',serif;
+    font-family:'Fredoka',sans-serif;
     font-weight:600;
     margin:0;
     letter-spacing:-0.01em;
@@ -100,7 +100,7 @@
   }
   .brand:hover .brand-mark{transform:rotate(-8deg) scale(1.05);}
   .brand-mark svg{width:20px;height:20px;}
-  .brand-name{font-size:17px;font-family:'Fraunces',serif;font-weight:600;}
+  .brand-name{font-size:17px;font-family:'Fredoka',sans-serif;font-weight:600;}
   .brand-name .dim{color:var(--ink-faint);font-weight:450;}
 
   .top-actions{display:flex;align-items:center;gap:8px;}
@@ -155,7 +155,7 @@
   .hero-eyebrow{
     font-family:'IBM Plex Mono',monospace;
     font-size:11px;text-transform:uppercase;letter-spacing:0.1em;
-    color:var(--honey);margin-bottom:8px;
+    color:var(--honey-dark);margin-bottom:8px;
     display:flex;align-items:center;gap:7px;
   }
   .hero-eyebrow .paw{width:11px;height:11px;flex-shrink:0;opacity:.9;}
@@ -182,7 +182,7 @@
   }
   .weight-line{display:flex;align-items:baseline;gap:6px;}
   .weight-line .num{
-    font-family:'Fraunces',serif;font-weight:650;font-variation-settings:'opsz' 90;
+    font-family:'Fredoka',sans-serif;font-weight:600;
     font-size:52px;line-height:1;color:var(--ink);
     font-variant-numeric:tabular-nums;
   }
@@ -234,7 +234,7 @@
     background:var(--ink);
     border-radius:3px;
     transform:translate(-50%,-50%);
-    box-shadow:0 0 0 3px rgba(27,20,15,0.9), 0 0 10px rgba(245,236,220,0.5);
+    box-shadow:0 0 0 3px #fff, 0 1px 4px rgba(55,42,29,0.35);
     transition:left 1s linear;
   }
   .timeline-marker{
@@ -284,34 +284,39 @@
     margin-top:20px;
     width:100%;
     background:linear-gradient(160deg,var(--honey),var(--honey-dark));
-    color:#221507;
+    color:#2A1B08;
     border:none;
     border-radius:14px;
     padding:17px 20px;
-    font-family:'Fraunces',serif;
+    font-family:'Fredoka',sans-serif;
     font-weight:600;
     font-size:16.5px;
     cursor:pointer;
     position:relative;z-index:1;
+    overflow:visible;
     display:flex;align-items:center;justify-content:center;gap:10px;
-    box-shadow:0 8px 22px rgba(231,163,61,0.28);
+    box-shadow:0 8px 22px rgba(203,138,46,0.30);
     transition:filter .15s ease, transform .1s ease, box-shadow .15s ease;
   }
-  .feed-btn:hover{filter:brightness(1.06);box-shadow:0 10px 26px rgba(231,163,61,0.38);}
+  .feed-btn:hover{filter:brightness(1.05);box-shadow:0 10px 26px rgba(203,138,46,0.4);}
   .feed-btn:active{transform:scale(0.985);}
   .feed-btn:disabled{background:var(--surface-3);color:var(--ink-faint);cursor:not-allowed;box-shadow:none;}
-  .feed-btn svg{width:19px;height:19px;flex-shrink:0;}
+  .feed-btn svg{width:19px;height:19px;flex-shrink:0;position:relative;z-index:2;}
   .feed-btn .kibble{
-    position:absolute;width:5px;height:5px;border-radius:1px;
-    background:#221507;top:8px;opacity:0;
+    position:absolute;width:7px;height:6px;border-radius:2px 2px 3px 3px;
+    background:#3A2409;top:14px;left:50%;
+    opacity:0;
+    z-index:1;
+    pointer-events:none;
   }
-  .feed-btn.dropping .kibble{animation:drop .6s ease-in forwards;}
-  .feed-btn.dropping .kibble:nth-child(1){left:38%;animation-delay:0s;}
-  .feed-btn.dropping .kibble:nth-child(2){left:50%;animation-delay:.08s;}
-  .feed-btn.dropping .kibble:nth-child(3){left:62%;animation-delay:.16s;}
+  .feed-btn.dropping .kibble{animation:drop .85s cubic-bezier(.3,.6,.4,1) forwards;}
+  .feed-btn.dropping .kibble:nth-child(1){margin-left:-22px;animation-delay:0s;}
+  .feed-btn.dropping .kibble:nth-child(2){margin-left:-2px;animation-delay:.1s;}
+  .feed-btn.dropping .kibble:nth-child(3){margin-left:16px;animation-delay:.2s;}
   @keyframes drop{
-    0%{opacity:1;transform:translateY(0) rotate(0deg);}
-    100%{opacity:0;transform:translateY(38px) rotate(140deg);}
+    0%{opacity:0;transform:translateY(-4px) rotate(0deg) scale(.6);}
+    12%{opacity:1;transform:translateY(0) rotate(30deg) scale(1);}
+    100%{opacity:0;transform:translateY(52px) rotate(200deg) scale(.8);}
   }
   .feed-note{
     text-align:center;font-size:12px;color:var(--ink-faint);
@@ -395,7 +400,7 @@
   .add-row input[type="number"]{width:78px;}
   .add-row .add-btn{
     margin-left:auto;
-    background:var(--honey);color:#221507;border:none;
+    background:var(--honey);color:#2A1B08;border:none;
     border-radius:9px;padding:10px 16px;
     font-family:'Inter',sans-serif;font-weight:600;font-size:13px;
     cursor:pointer;transition:filter .15s ease;
@@ -412,22 +417,32 @@
 
   /* ---------- history ---------- */
   .log-row{
-    display:flex;align-items:center;gap:12px;
-    padding:12px 16px;
+    display:flex;flex-direction:column;gap:7px;
+    padding:13px 16px;
     border-bottom:1px solid var(--line);
     font-family:'IBM Plex Mono',monospace;
-    font-size:12.5px;
     transition:background .15s ease;
   }
   .log-row:hover{background:var(--surface-2);}
   .log-row:last-child{border-bottom:none;}
-  .log-date{color:var(--ink-soft);min-width:100px;}
-  .log-grams{min-width:48px;color:var(--ink);}
-  .log-type{color:var(--ink-faint);min-width:60px;}
-  .log-status{margin-left:auto;padding:3px 9px;border-radius:999px;font-size:11px;white-space:nowrap;}
+  .log-row-top{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+  }
+  .log-date{color:var(--ink);font-size:13px;font-weight:500;flex-shrink:0;}
+  .log-status{
+    padding:3px 10px;border-radius:999px;font-size:11px;
+    white-space:normal;text-align:right;line-height:1.35;
+    max-width:62%;
+  }
   .log-status.ok{background:var(--sage-tint);color:var(--sage);}
   .log-status.fail{background:var(--rust-tint);color:var(--rust);}
-  .log-status.skip{background:var(--honey-tint);color:var(--honey);}
+  .log-status.skip{background:var(--honey-tint);color:var(--honey-dark);}
+  .log-row-meta{
+    display:flex;align-items:center;gap:8px;
+    font-size:12px;color:var(--ink-faint);
+  }
+  .log-grams{color:var(--ink-soft);}
+  .log-row-meta .sep{opacity:.5;}
 
   footer{
     text-align:center;padding:26px 20px 0;
@@ -455,7 +470,7 @@
   <div class="top-row">
     <div class="brand">
       <div class="brand-mark">
-        <svg viewBox="0 0 24 24" fill="none" stroke="#221507" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 14v-2a3 3 0 0 1 6 0v2"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" stroke="#2A1B08" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round"><path d="M4 14a8 8 0 0 1 16 0v3a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M9 14v-2a3 3 0 0 1 6 0v2"/></svg>
       </div>
       <div class="brand-name">Alimentador <span class="dim">· Hugo</span></div>
     </div>
@@ -786,7 +801,7 @@
     feedBtn.disabled = true;
     feedBtn.classList.add("dropping");
     feedNote.textContent = "enviando pro alimentador…";
-    setTimeout(() => feedBtn.classList.remove("dropping"), 650);
+    setTimeout(() => feedBtn.classList.remove("dropping"), 950);
     set(ref(db, "commands"), {
       feed_now: true,
       feed_now_timestamp: Math.floor(Date.now() / 1000)
@@ -851,10 +866,15 @@
 
       return `
         <div class="log-row">
-          <span class="log-date">${dateStr}</span>
-          <span class="log-grams">${l.grams ?? 0}g</span>
-          <span class="log-type">${typeLabel}</span>
-          <span class="log-status ${statusClass}">${statusLabel}</span>
+          <div class="log-row-top">
+            <span class="log-date">${dateStr}</span>
+            <span class="log-status ${statusClass}">${statusLabel}</span>
+          </div>
+          <div class="log-row-meta">
+            <span class="log-grams">${l.grams ?? 0}g</span>
+            <span class="sep">·</span>
+            <span class="log-type">${typeLabel}</span>
+          </div>
         </div>
       `;
     }).join("");
