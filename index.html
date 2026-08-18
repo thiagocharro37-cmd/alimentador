@@ -684,7 +684,7 @@
       lastFeedTimeEl.textContent = "";
     }
 
-    const online = s.last_seen && (Date.now() / 1000 - s.last_seen < 60);
+    const online = s.last_seen && (Date.now() / 1000 - s.last_seen < 600); // 10 min de tolerância
     deviceDot.className = "dot " + (online ? "on" : "off");
     deviceStatusText.textContent = online ? "dispositivo online" : "dispositivo offline";
   });
